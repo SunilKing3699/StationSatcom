@@ -1,41 +1,34 @@
-# Station Guard IBIS Daily Installation Generator
+# Station Guard Installation Report Generator
 
-Zero-cost GitHub Pages version for Station Satcom.
-
-## Purpose
-Combines two ESET reports into a Station Satcom branded IBIS-ready Excel/CSV output:
-
-1. Device Information / Serial Number report
-2. ESET Installation Date report
+Zero-cost GitHub Pages tool for Station Satcom.
 
 ## Hosting
-Upload these files to the `ESET` branch root of the GitHub repository and enable GitHub Pages from that branch.
-
-Required files:
+Upload these files to the root of the `ESET` branch and enable GitHub Pages from branch `/root`:
 
 - `index.html`
 - `assets/station-guard-logo.png`
 - `assets/station-satcom-logo.png`
 
-## Cost
-No server, no database, no API, no paid hosting. Runs locally in the user's browser.
+## Output
+The tool generates one Station Satcom formatted Excel report with:
 
-## Supported inputs
-- CSV
-- XLSX
-- XLS
-- Simple ESET table PDF extraction, when text tables are readable
-
-For production accuracy, scheduled CSV/XLSX export from ESET is recommended.
-
-## Output sheets
-- IBIS Ready
+- Installation Report
 - Validation Audit
-- Data Quality Review
 - Run Summary
 
-## ICCID rule
-- Use valid globally unique ESET serial number.
-- If serial is blank, placeholder, VMware/virtual, duplicated, missing, or multiple serials exist, generate ICCID from `Vessel_Computer`.
-- ICCID removes spaces and hyphens. Underscore separator is retained.
-- Collision after cleaning goes to Data Quality Review.
+The report columns are:
+
+- CUSTOMER NAME
+- VESSEL NAME
+- DEVICE NAME
+- SERIAL NUMBER
+- INSTALLATION DATE
+
+Installation Date is exported in `DD-MM-YYYY HH:MM` format.
+
+## Notes
+- No server
+- No database
+- No paid hosting
+- Browser-based processing
+- CSV/XLSX recommended for production accuracy
