@@ -1,15 +1,132 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh"
-        content="0; url=Station_Guard_Interactive_Customer_Demo.html">
-  <title>Station Guard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Station Guard IBIS Daily Installation Generator</title>
+  <meta name="description" content="Station Satcom branded, zero-cost, browser-based ESET to IBIS installation report generator." />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    :root{--bg:#07111f;--panel:#0f1d2d;--panel2:#14283b;--text:#eef7ff;--muted:#9fb6c9;--teal:#00b7b0;--orange:#ff8a2b;--green:#7bd64f;--red:#ff5f6d;--border:#25445b;--white:#fff}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#07111f,#0b1e2c 48%,#07111f);color:var(--text)}
+    .wrap{max-width:1180px;margin:auto;padding:28px 18px 42px}.top{display:flex;gap:20px;align-items:center;justify-content:space-between;margin-bottom:22px}.brand{display:flex;gap:14px;align-items:center}.brand img{height:58px;max-width:230px;object-fit:contain;background:#fff;border-radius:8px;padding:7px}.badge{border:1px solid var(--border);background:#102235;border-radius:999px;padding:9px 14px;color:#bdeeea;font-weight:700}
+    h1{font-size:34px;line-height:1.15;margin:10px 0 8px} .sub{color:var(--muted);font-size:16px;max-width:850px;line-height:1.55}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}.card{background:rgba(15,29,45,.92);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:0 12px 38px rgba(0,0,0,.24)}.card h2{margin:0 0 14px;font-size:19px}.drop{border:2px dashed #2e6278;border-radius:18px;padding:28px;text-align:center;background:#0b1928;cursor:pointer;transition:.15s}.drop:hover,.drop.drag{border-color:var(--teal);background:#0f2535}.drop strong{display:block;font-size:20px;margin-bottom:8px}.drop small{color:var(--muted)}input[type=file]{display:none}label{display:block;font-weight:700;color:#d8efff;margin-bottom:7px}input,select{width:100%;background:#091827;border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px;font-size:14px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:800;cursor:pointer;color:#06121d;background:var(--teal)}.btn.secondary{background:#21384b;color:#dff7ff;border:1px solid var(--border)}.btn.orange{background:var(--orange)}.btn:disabled{opacity:.5;cursor:not-allowed}.status{margin-top:13px;padding:12px 14px;border-radius:12px;background:#0b1928;border:1px solid var(--border);color:#cce8f5}.status.good{border-color:#1b6c46;background:#0e261c}.status.bad{border-color:#823041;background:#2b1118}.files{display:grid;gap:8px}.filepill{display:flex;justify-content:space-between;gap:10px;background:#0b1928;border:1px solid var(--border);padding:11px 12px;border-radius:12px;color:#c7e3ef}.filepill b{color:#fff}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:18px 0}.metric{background:#0f1d2d;border:1px solid var(--border);border-radius:14px;padding:14px}.metric span{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}.metric b{display:block;font-size:26px;margin-top:7px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.tab{background:#102235;color:#d7f2ff;border:1px solid var(--border);border-radius:999px;padding:9px 12px;cursor:pointer}.tab.active{background:var(--teal);color:#06121d;border-color:var(--teal);font-weight:800}.tablewrap{overflow:auto;border:1px solid var(--border);border-radius:14px;background:#071522}table{width:100%;border-collapse:collapse;min-width:1040px}th,td{border-bottom:1px solid #183247;padding:10px;text-align:left;font-size:13px;vertical-align:top}th{position:sticky;top:0;background:#102235;color:#bdeeea;z-index:1}tr:hover td{background:#0c2030}.ok{color:var(--green);font-weight:800}.warn{color:#ffd06a;font-weight:800}.badtext{color:var(--red);font-weight:800}.footer{margin-top:28px;color:#88a3b6;font-size:12px;text-align:center}.note{color:#ffdca0}.hidden{display:none!important}@media(max-width:850px){.grid,.row{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start;flex-direction:column}h1{font-size:28px}}
+  </style>
 </head>
 <body>
-  <script>
-    window.location.href =
-      "Station_Guard_Interactive_Customer_Demo.html";
-  </script>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <img src="assets/station-guard-logo.png" onerror="this.style.display='none'" alt="Station Guard" />
+      <img src="assets/station-satcom-logo.png" onerror="this.style.display='none'" alt="Station Satcom" />
+    </div>
+    <div class="badge">Zero-cost local browser tool</div>
+  </div>
+  <h1>Station Guard IBIS Daily Installation Generator</h1>
+  <p class="sub">Upload ESET Serial Number and Installation Date reports, select a date or date range, and download a Station Satcom branded IBIS-ready Excel workbook. All processing happens inside the browser. No server, no database, no license cost.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>1. Upload ESET reports</h2>
+      <div id="drop" class="drop">
+        <strong>Drop reports here or click to upload</strong>
+        <small>Supported: CSV, XLSX, XLS and simple ESET table PDF. CSV/XLSX is recommended for production accuracy.</small>
+      </div>
+      <input id="fileInput" type="file" multiple accept=".csv,.xlsx,.xls,.pdf" />
+      <div id="fileList" class="files" style="margin-top:14px"></div>
+      <div id="uploadStatus" class="status">Waiting for two reports.</div>
+    </div>
+    <div class="card">
+      <h2>2. Filter and generate</h2>
+      <div class="row">
+        <div><label for="tz">ESET timestamp handling</label><select id="tz"><option value="ist" selected>Convert UTC to IST</option><option value="utc">Keep UTC</option></select></div>
+        <div><label for="quickDate">Available dates</label><select id="quickDate"><option value="">Upload installation report first</option></select></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div><label for="fromDate">From date</label><input id="fromDate" type="date" /></div>
+        <div><label for="toDate">To date</label><input id="toDate" type="date" /></div>
+      </div>
+      <div class="btns">
+        <button id="generateBtn" class="btn">Generate Report</button>
+        <button id="resetBtn" class="btn secondary">Reset</button>
+      </div>
+      <div id="generateStatus" class="status">Ready after upload.</div>
+    </div>
+  </div>
+
+  <div id="results" class="hidden">
+    <div class="summary" id="summary"></div>
+    <div class="card">
+      <h2>3. Output</h2>
+      <div class="btns">
+        <button id="downloadXlsx" class="btn">Download Branded Excel</button>
+        <button id="downloadCsv" class="btn orange">Download IBIS CSV</button>
+        <button id="copyEmail" class="btn secondary">Copy Email Table</button>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-tab="ready">IBIS Ready</button>
+        <button class="tab" data-tab="audit">Validation Audit</button>
+        <button class="tab" data-tab="review">Data Quality Review</button>
+      </div>
+      <div class="row" style="margin:10px 0 14px"><div><label for="search">Search result</label><input id="search" placeholder="Customer, vessel, computer, ICCID, status..." /></div><div><label>Report subject</label><input id="subject" readonly /></div></div>
+      <div class="tablewrap"><table id="resultTable"></table></div>
+    </div>
+  </div>
+
+  <div class="footer">Prepared by Sunil Kanagaraj | Designation: Application Manager | Station Satcom. Operational exports do not include personal credits.</div>
+</div>
+<script>
+(function(){
+  if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'}
+  const state={serial:null,install:null,analysis:null,tab:'ready',search:''};
+  const $=id=>document.getElementById(id);
+  const HEADERS={customer:['computer tags','customer name','customer','company'],vessel:['static group name','vessel name','vessel','group path','group'],computer:['computer name','device name','hostname','computer'],serial:['serial number','serial','device information serial number'],installation:['installation date','installed date','install date','date installed'],product:['product','application','application name','eset product'],version:['version','application version','product version']};
+  const PLACE=new Set(['default string','system serial number','to be filled by o.e.m.','to be filled by oem','unknown','none','not specified','n/a','na','oem','o.e.m.','0','00000000']);
+  function norm(v){return String(v??'').replace(/^\uFEFF/,'').trim().replace(/\s+/g,' ').toLowerCase()}
+  function canon(v){return String(v??'').replace(/^\uFEFF/,'').trim().replace(/\s+/g,' ')}
+  function clean(v){return String(v??'').trim().replace(/[\s\-\u2010-\u2015\u2212]+/g,'')}
+  function generated(vessel,computer){const v=clean(vessel),c=clean(computer);return v&&c?`${v}_${c}`:''}
+  function isPlaceholder(s){const v=norm(s);return !v||PLACE.has(v)||v.includes('to be filled by')||v.includes('system serial number')||v.includes('default string')}
+  function isVM(s){const v=norm(s);return ['vmware','virtual machine','virtualbox','qemu','xen','parallels','hyper-v'].some(x=>v.includes(x))}
+  function identity(c,v,pc){return `${norm(c)}\u241f${norm(v)}\u241f${norm(pc)}`}
+  function device(v,pc){return `${norm(v)}\u241f${norm(pc)}`}
+  function pick(row,type){return row.__mapped?.[type]??''}
+  function mapRow(row){const mapped={}; const keys=Object.keys(row); for(const type in HEADERS){const hit=keys.find(k=>HEADERS[type].includes(norm(k)))||keys.find(k=>HEADERS[type].some(h=>norm(k).includes(h)||h.includes(norm(k)))); mapped[type]=hit?canon(row[hit]):''} row.__mapped=mapped; return row}
+  function detect(rows,headers){const h=headers.map(norm).join('|'); if(/serial number|device information serial/i.test(h)&&!/installation date|installed date|install date/i.test(h))return 'serial'; if(/installation date|installed date|install date/i.test(h))return 'install'; const sample=rows.slice(0,5).map(r=>Object.values(r).join(' ')).join(' ').toLowerCase(); if(sample.includes('serial number')&&!sample.includes('installation date'))return 'serial'; if(sample.includes('installation date'))return 'install'; return null}
+  function excelDateToJS(n){const d=XLSX.SSF.parse_date_code(n); if(!d)return null; return new Date(Date.UTC(d.y,d.m-1,d.d,d.H||0,d.M||0,Math.floor(d.S||0)))}
+  function parseDate(value,tz){ if(value instanceof Date) return shift(value,tz); const s=String(value??'').trim(); if(!s)return null; if(/^\d+(\.\d+)?$/.test(s)&&Number(s)>20000){const d=excelDateToJS(Number(s)); return d?shift(d,tz):null} let d=new Date(s.replace(' ','T')); if(isNaN(d)){const m=s.match(/(\d{1,2})[-\/ ]([A-Za-z]{3,}|\d{1,2})[-\/ ](\d{2,4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/); if(m){const months={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11}; const mon=isNaN(m[2])?months[m[2].slice(0,3).toLowerCase()]:Number(m[2])-1; const y=Number(m[3].length===2?'20'+m[3]:m[3]); d=new Date(Date.UTC(y,mon,Number(m[1]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0))) }} if(isNaN(d))return null; return shift(d,tz)}
+  function shift(d,tz){return tz==='ist'?new Date(d.getTime()+330*60000):d}
+  function ymd(d){return d?`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`:''}
+  function displayDate(d){return d?`${ymd(d)} ${String(d.getUTCHours()).padStart(2,'0')}:${String(d.getUTCMinutes()).padStart(2,'0')}`:''}
+  async function parseFile(file){const ext=file.name.split('.').pop().toLowerCase(); let rows=[]; if(ext==='csv'){const text=await file.text(); const out=Papa.parse(text,{header:true,skipEmptyLines:true}); if(out.errors?.length) console.warn(out.errors); rows=out.data.map(r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[canon(k),canon(v)]))).filter(r=>Object.values(r).some(norm));}
+    else if(['xlsx','xls'].includes(ext)){const buf=await file.arrayBuffer(); const wb=XLSX.read(buf,{type:'array',cellDates:true}); const ws=wb.Sheets[wb.SheetNames[0]]; rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false}).map(r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[canon(k),canon(v)]))).filter(r=>Object.values(r).some(norm));}
+    else if(ext==='pdf'){rows=await parsePdf(file)} else throw new Error(`${file.name}: unsupported file type`);
+    if(!rows.length) throw new Error(`${file.name}: no rows found`); rows=rows.map(mapRow); const kind=detect(rows,Object.keys(rows[0]||{})); if(!kind) throw new Error(`${file.name}: cannot identify report. Required fields include Computer tags, Static group name, Computer name, Serial number or Installation date.`); return {name:file.name,kind,rows}; }
+  async function parsePdf(file){ if(!window.pdfjsLib) throw new Error('PDF parser is not loaded. Use CSV/XLSX or check internet access.'); const buf=await file.arrayBuffer(); const pdf=await pdfjsLib.getDocument({data:buf}).promise; let text=''; for(let i=1;i<=pdf.numPages;i++){const page=await pdf.getPage(i); const content=await page.getTextContent(); const items=content.items.map(it=>it.str); text+='\n'+items.join(' '); } return parsePdfText(text); }
+  function parsePdfText(text){const lines=text.split(/\n|\r/).map(canon).filter(Boolean); const headerLine=lines.find(l=>/computer tags|customer name/i.test(l)&&/computer name/i.test(l)&&( /serial number/i.test(l)||/installation date/i.test(l))); if(!headerLine) throw new Error('PDF table could not be read cleanly. Please export CSV/XLSX from ESET for production use.'); const hasSerial=/serial number/i.test(headerLine), hasInstall=/installation date/i.test(headerLine); const rows=[]; const rx=hasSerial?/(.*?)\s{2,}(.*?)\s{2,}(.*?)\s{2,}(.+)$/ : /(.*?)\s{2,}(.*?)\s{2,}(.*?)\s{2,}(.+)$/; for(const line of lines){ if(line===headerLine||/computer tags|customer name/i.test(line))continue; const m=line.match(rx); if(m){rows.push({'Computer tags':m[1],'Static group name':m[2],'Computer name':m[3],[hasSerial?'Serial number':'Installation date']:m[4]})} } if(!rows.length) throw new Error('PDF rows could not be extracted. Please use CSV/XLSX for clean data.'); return rows; }
+  async function handleFiles(files){setStatus('uploadStatus','Reading reports...'); try{for(const f of Array.from(files)){const p=await parseFile(f); if(p.kind==='serial')state.serial=p; else state.install=p;} renderFiles(); refreshDates(); setStatus('uploadStatus',state.serial&&state.install?'Both reports loaded. Select date and generate.':'Upload the missing report.','good')}catch(e){setStatus('uploadStatus',e.message,'bad')}}
+  function renderFiles(){const box=$('fileList'); box.innerHTML=''; for(const p of [state.serial,state.install].filter(Boolean)){const div=document.createElement('div'); div.className='filepill'; div.innerHTML=`<span><b>${p.kind==='serial'?'Serial report':'Installation report'}</b><br>${p.name}</span><span>${p.rows.length} rows</span>`; box.appendChild(div)}}
+  function refreshDates(){const q=$('quickDate'); q.innerHTML='<option value="">Select available date</option>'; if(!state.install)return; const dates=[...new Set(state.install.rows.map(r=>ymd(parseDate(pick(r,'installation'),$('tz').value))).filter(Boolean))].sort(); dates.forEach(d=>q.add(new Option(d,d))); if(dates.length){$('fromDate').value=dates[dates.length-1];$('toDate').value=dates[dates.length-1];q.value=dates[dates.length-1];}}
+  function analyze(){ if(!state.serial||!state.install) return setStatus('generateStatus','Upload both reports first.','bad'); const from=$('fromDate').value,to=$('toDate').value,tz=$('tz').value; if(!from||!to||from>to)return setStatus('generateStatus','Select valid date range.','bad'); const serialRows=state.serial.rows, installRows=state.install.rows; const byFull=new Map(), byDevice=new Map(), serialOwners=new Map();
+    serialRows.forEach(r=>{const c=pick(r,'customer'),v=pick(r,'vessel'),pc=pick(r,'computer'),id=identity(c,v,pc),dev=device(v,pc),ser=pick(r,'serial'); if(!byFull.has(id))byFull.set(id,[]); byFull.get(id).push(r); if(!byDevice.has(dev))byDevice.set(dev,new Set()); byDevice.get(dev).add(id); const cs=clean(ser); if(cs&&!isPlaceholder(ser)&&!isVM(ser)){if(!serialOwners.has(cs.toLowerCase()))serialOwners.set(cs.toLowerCase(),new Set()); serialOwners.get(cs.toLowerCase()).add(id)}});
+    const selected=[]; installRows.forEach((r,idx)=>{const d=parseDate(pick(r,'installation'),tz),date=ymd(d); if(date&&date>=from&&date<=to)selected.push({r,idx,d,date})}); const seen=new Set(), records=[];
+    selected.forEach(({r,idx,d,date})=>{const c=pick(r,'customer'),v=pick(r,'vessel'),pc=pick(r,'computer'),id=identity(c,v,pc),dev=device(v,pc); let rows=byFull.get(id)||[]; if(!rows.length&&byDevice.get(dev)?.size===1){const only=[...byDevice.get(dev)][0]; rows=byFull.get(only)||[]} const key=`${id}|${date}`; let superseded=false; if(seen.has(key))superseded=true; else seen.add(key); const dec=decide(c,v,pc,rows,serialOwners); records.push({Customer:c,Vessel:v,Computer:pc,RawSerial:dec.raw,ICCID:dec.iccid,InstallationDate:date,InstallationDateTime:displayDate(d),ICCIDSource:dec.source,Status:superseded?'REVIEW':dec.status,Reason:superseded?'Repeated installation row for same device/date':dec.reason,Ready:!superseded&&dec.ready,Identity:id})});
+    const ic=new Map(); records.forEach(rec=>{if(rec.ICCID){const k=rec.ICCID.toLowerCase(); if(!ic.has(k))ic.set(k,new Set()); ic.get(k).add(rec.Identity)}}); records.forEach(rec=>{if(rec.ICCID&&ic.get(rec.ICCID.toLowerCase()).size>1){rec.Ready=false;rec.Status='REVIEW';rec.Reason='ICCID collision after cleaning'}});
+    state.analysis={records,ready:records.filter(r=>r.Ready),review:records.filter(r=>!r.Ready),from,to,tz}; $('results').classList.remove('hidden'); setStatus('generateStatus',`${state.analysis.ready.length} IBIS-ready records generated from ${records.length} selected rows.`,'good'); $('subject').value=`Station Guard IBIS Installation Report - ${from===to?from:from+' to '+to}`; renderSummary(); renderTable(); }
+  function decide(c,v,pc,rows,serialOwners){if(!norm(v)||!norm(pc))return {raw:'',iccid:'',source:'Unresolved',status:'REVIEW',reason:'Missing vessel or computer name',ready:false}; const fallback=generated(v,pc); if(!rows.length)return {raw:'',iccid:fallback,source:'Generated Vessel_Computer',status:'READY-GENERATED',reason:'No matching serial row found; generated deterministic ICCID',ready:!!fallback}; const raws=[...new Set(rows.map(r=>pick(r,'serial')).filter(x=>norm(x)))]; const valid=raws.filter(s=>!isPlaceholder(s)&&!isVM(s)); if(valid.length===1){const cs=clean(valid[0]); const owners=serialOwners.get(cs.toLowerCase())||new Set(); if(owners.size===1)return {raw:valid[0],iccid:cs,source:'ESET Serial',status:'READY',reason:'Valid unique ESET serial',ready:true}; return {raw:valid[0],iccid:fallback,source:'Generated Vessel_Computer',status:'READY-GENERATED',reason:'Serial duplicated across computers; generated deterministic ICCID',ready:!!fallback}}
+    if(valid.length>1)return {raw:valid.join(' | '),iccid:fallback,source:'Generated Vessel_Computer',status:'READY-GENERATED',reason:'Multiple serials for same computer; generated deterministic ICCID',ready:!!fallback}; const raw=raws.join(' | '); const reason=raws.some(isVM)?'VMware/virtual identifier detected; generated deterministic ICCID':raws.length?'Placeholder serial detected; generated deterministic ICCID':'Blank serial; generated deterministic ICCID'; return {raw,iccid:fallback,source:'Generated Vessel_Computer',status:'READY-GENERATED',reason,ready:!!fallback};}
+  function renderSummary(){const a=state.analysis, rec=a.records; const metrics=[['Selected',rec.length],['IBIS Ready',a.ready.length],['Generated ICCID',a.ready.filter(r=>r.ICCIDSource!=='ESET Serial').length],['Unique Serial',a.ready.filter(r=>r.ICCIDSource==='ESET Serial').length],['Review',a.review.length]]; $('summary').innerHTML=metrics.map(m=>`<div class="metric"><span>${m[0]}</span><b>${m[1]}</b></div>`).join('')}
+  function renderTable(){const a=state.analysis;if(!a)return; let data=state.tab==='ready'?a.ready:state.tab==='review'?a.review:a.records; const q=norm($('search').value); if(q)data=data.filter(r=>norm(Object.values(r).join(' ')).includes(q)); const cols=state.tab==='ready'?['Customer','Vessel','Computer','ICCID','InstallationDate']:['Customer','Vessel','Computer','RawSerial','ICCID','InstallationDateTime','ICCIDSource','Status','Reason']; const table=$('resultTable'); table.innerHTML='<thead><tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr></thead><tbody>'+data.map(r=>'<tr>'+cols.map(c=>`<td>${escapeHtml(r[c]??'')}</td>`).join('')+'</tr>').join('')+'</tbody>';}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+  function setStatus(id,msg,type){const el=$(id);el.textContent=msg;el.className='status'+(type?' '+type:'')}
+  function aoaFrom(records,cols){return [cols, ...records.map(r=>cols.map(c=>r[c]??''))]}
+  function downloadWorkbook(){const a=state.analysis;if(!a)return; const wb=XLSX.utils.book_new(); const readyCols=['Customer','Vessel','Computer','ICCID','InstallationDate']; const auditCols=['Customer','Vessel','Computer','RawSerial','ICCID','InstallationDateTime','ICCIDSource','Status','Reason']; XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoaFrom(a.ready,readyCols)),'IBIS Ready'); XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoaFrom(a.records,auditCols)),'Validation Audit'); XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoaFrom(a.review,auditCols)),'Data Quality Review'); XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Station Guard IBIS Daily Installation Generator'],['From Date',a.from],['To Date',a.to],['Timezone',a.tz==='ist'?'UTC converted to IST':'UTC kept'],['Selected Rows',a.records.length],['IBIS Ready',a.ready.length],['Review Required',a.review.length],['Serial Report',state.serial?.name||''],['Installation Report',state.install?.name||'']]),'Run Summary'); XLSX.writeFile(wb,`Station_Guard_IBIS_${a.from}_to_${a.to}.xlsx`)}
+  function downloadCsv(){const a=state.analysis;if(!a)return; const csv=Papa.unparse(a.ready.map(r=>({'Customer Name':r.Customer,'Vessel Name':r.Vessel,'Computer Name':r.Computer,'ICCID':r.ICCID,'Installation Date':r.InstallationDate}))); const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob); const link=document.createElement('a');link.href=url;link.download=`IBIS_Ready_${a.from}_to_${a.to}.csv`;link.click();URL.revokeObjectURL(url)}
+  async function copyEmail(){const a=state.analysis;if(!a)return; const lines=[`Subject: ${$('subject').value}`,'','Customer\tVessel\tComputer\tICCID\tInstallation Date',...a.ready.map(r=>`${r.Customer}\t${r.Vessel}\t${r.Computer}\t${r.ICCID}\t${r.InstallationDate}`)]; await navigator.clipboard.writeText(lines.join('\n')); setStatus('generateStatus','Email table copied.','good')}
+  $('drop').onclick=()=>$('fileInput').click(); $('fileInput').onchange=e=>handleFiles(e.target.files); ['dragenter','dragover'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.add('drag')})); ['dragleave','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.remove('drag')})); $('drop').addEventListener('drop',e=>handleFiles(e.dataTransfer.files)); $('generateBtn').onclick=analyze; $('resetBtn').onclick=()=>location.reload(); $('tz').onchange=refreshDates; $('quickDate').onchange=e=>{if(e.target.value){$('fromDate').value=e.target.value;$('toDate').value=e.target.value}}; document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.tab=b.dataset.tab;renderTable()}); $('search').oninput=renderTable; $('downloadXlsx').onclick=downloadWorkbook; $('downloadCsv').onclick=downloadCsv; $('copyEmail').onclick=copyEmail;
+})();
+</script>
 </body>
 </html>
